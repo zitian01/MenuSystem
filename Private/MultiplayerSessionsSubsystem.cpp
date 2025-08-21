@@ -20,6 +20,20 @@ UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
 
 void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPublicConnections, FString MatchType)
 {
+	if (!SessionInterface.IsValid())
+	{
+		return;
+	}
+
+	auto ExistingSession = SessionInterface->GetNamedSession(NAME_GameSession);
+	if (ExistingSession != nullptr)
+	{
+		bCreateSessionOnDestroy = true;
+		LastNumPublicConnections = NumPublicConnections;
+		LastMatchType = MatchType;
+
+		DestroySession();
+	}
 }
 
 void UMultiplayerSessionsSubsystem::FindSessions(int32 MaxSearchResults, FString MatchType)
